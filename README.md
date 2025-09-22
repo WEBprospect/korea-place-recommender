@@ -432,7 +432,7 @@ shareCourse() {
 ---
 
 
-## 📁 프로젝트 구조
+## 프로젝트 구조
 
 ```
 emotion_recommandVER2/
@@ -455,7 +455,7 @@ emotion_recommandVER2/
 
 ---
 
-## 🛠️ 기술 스택
+## 기술 스택
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **AI/ML**: OpenAI GPT-4o API
@@ -466,7 +466,7 @@ emotion_recommandVER2/
 
 ---
 
-## 📝 사용법
+## 사용법
 
 1. **회원가입/로그인**: 사용자 계정 생성 또는 기존 계정으로 로그인
 2. **CARE AI 시작**: 메인 페이지에서 "CARE AI 시작" 버튼 클릭
@@ -478,7 +478,7 @@ emotion_recommandVER2/
 
 ---
 
-## 🎯 프로젝트의 의의
+## 프로젝트의 의의
 
 CARE는 단순한 검색 도구를 넘어서 사용자의 감정과 상황을 이해하고, 그에 맞는 최적의 선택을 제안하는 **감성적 AI 추천 시스템**입니다. 
 
