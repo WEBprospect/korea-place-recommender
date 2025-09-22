@@ -1,6 +1,0 @@
-<?php
-// Server-side API keys (DO NOT COMMIT PUBLICLY)
-
-// OpenAI API key
-$OPENAI_API_KEY = 'YOUR_OPENAI_API_KEY_HERE';
-
