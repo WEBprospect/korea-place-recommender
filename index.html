@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARE - Customized AI Recommendation Engine</title>
+    <link rel="stylesheet" href="styles.css?v=1.0.1">
+    <link rel="stylesheet" href="kakao-styles.css?v=1.0.1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="CARE - 당신만을 위한 맞춤형 AI 추천 엔진">
+    <style>
+        /* 인라인 CSS - 배경 확실히 적용 */
+        body {
+            background: url('메인페이지.jpg') center center / cover no-repeat !important;
+            background-attachment: fixed !important;
+            min-height: 100vh !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: relative !important;
+        }
+        
+        /* 배경 이미지 위에 오버레이 추가 (텍스트 가독성을 위해) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .app-container {
+            min-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(25px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-login-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .header-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .header-login-btn i {
+            font-size: 0.8rem;
+        }
+        
+        .header-logout-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .header-logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        .header-logout-btn i {
+            font-size: 0.8rem;
+        }
+
+        .header-basket-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            margin-right: 15px;
+        }
+
+        .header-basket-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .header-basket-btn i {
+            font-size: 0.8rem;
+        }
+
+        .header-basket-btn .basket-count {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .user-info-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-welcome {
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        /* Main CTA Section */
+        .main-cta-section {
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 60px 40px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        .cta-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #f0f0f0, #e0e0e0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cta-description {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        /* 선택 버튼 컨테이너 */
+        .selection-buttons-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .selection-btn {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #f59e0b);
+            background-size: 200% 100%;
+            color: white;
+            border: none;
+            padding: 25px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 15px 35px rgba(139, 92, 246, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+            text-align: center;
+        }
+
+        .selection-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 25px 50px rgba(139, 92, 246, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            background-position: 100% 0;
+        }
+
+        .selection-btn i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .selection-btn .btn-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .selection-btn .btn-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        /* CARE AI 버튼 특별 스타일 */
+        .custom-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 100%;
+            margin: 0 auto;
+            max-width: 400px;
+        }
+
+        .custom-btn:hover {
+            background-position: 100% 0;
+            box-shadow: 
+                0 25px 50px rgba(102, 126, 234, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .main-start-btn {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #f59e0b);
+            background-size: 200% 100%;
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 15px 35px rgba(139, 92, 246, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .main-start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .main-start-btn:hover::before {
+            left: 100%;
+        }
+        
+        .main-start-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            background-position: 100% 0;
+            box-shadow: 
+                0 20px 45px rgba(139, 92, 246, 0.5),
+                0 0 25px rgba(236, 72, 153, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .main-start-btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+        
+        .main-start-btn i {
+            font-size: 1.5rem;
+        }
+        
+        .main-start-btn span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .input-section, .results-section, .history-section, .loading-section {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+        
+        .footer {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(20px) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+        
+        /* Login Section Styles */
+        .login-section {
+            padding: 60px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .login-form {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .login-btn, .register-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .register-btn {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .register-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .user-info {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85)) !important;
+            backdrop-filter: blur(25px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 스토리 섹션 */
+        .story-section {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            padding: 100px 20px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+        
+        .story-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .story-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .story-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        .story-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 60px;
+            opacity: 0.9;
+            font-weight: 500;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .story-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        .story-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #fff, rgba(255,255,255,0.5), #fff);
+            border-radius: 25px 25px 0 0;
+        }
+        
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: left;
+            opacity: 0.95;
+        }
+        
+        .story-text:last-child {
+            margin-bottom: 0;
+        }
+        
+        .story-highlight {
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 4px solid rgba(255,255,255,0.5);
+            font-style: italic;
+            font-weight: 600;
+        }
+        
+        .story-signature {
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 30px;
+            opacity: 0.9;
+        }
+        
+        .story-signature::before {
+            content: '— ';
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .story-section {
+                padding: 60px 20px;
+            }
+            
+            .story-title {
+                font-size: 2.2rem;
+            }
+            
+            .story-content {
+                padding: 30px;
+            }
+            
+            .story-text {
+                font-size: 1rem;
+            }
+        }
+
+        /* 회원 후기 섹션 */
+        .reviews-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .reviews-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .reviews-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .reviews-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 60px;
+            font-weight: 500;
+        }
+        
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .review-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        .review-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .review-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 20px;
+            font-style: italic;
+            position: relative;
+        }
+        
+        .review-content::before {
+            content: '"';
+            font-size: 3rem;
+            color: #667eea;
+            position: absolute;
+            top: -10px;
+            left: -5px;
+            opacity: 0.3;
+            font-family: serif;
+        }
+        
+        .review-content::after {
+            content: '"';
+            font-size: 3rem;
+            color: #667eea;
+            position: absolute;
+            bottom: -20px;
+            right: -5px;
+            opacity: 0.3;
+            font-family: serif;
+        }
+        
+        .review-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .review-author::before {
+            content: '👤';
+            font-size: 1.2rem;
+        }
+        
+        .reviews-stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 40px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .reviews-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .review-card {
+                padding: 25px;
+            }
+            
+            .reviews-title {
+                font-size: 2rem;
+            }
+            
+            .reviews-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+        
+        .user-info h3 {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: -0.5px;
+        }
+        
+        .user-info p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            margin-right: 15px;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        .care-chat-btn {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #f59e0b);
+            background-size: 200% 100%;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 25px rgba(139, 92, 246, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .care-chat-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .care-chat-btn:hover::before {
+            left: 100%;
+        }
+        
+        .care-chat-btn:hover {
+            transform: translateY(-4px) scale(1.08);
+            background-position: 100% 0;
+            box-shadow: 
+                0 15px 35px rgba(139, 92, 246, 0.4),
+                0 0 20px rgba(236, 72, 153, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .care-chat-btn:active {
+            transform: translateY(-2px) scale(1.05);
+        }
+        
+        .care-chat-btn i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .message.ai .message-avatar {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .message-content {
+            background: #ffffff;
+            padding: 15px 20px;
+            border-radius: 20px;
+            max-width: 70%;
+            word-wrap: break-word;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin-left: auto;
+        }
+
+        .chat-input-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .chat-input-form {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .loading-dots {
+            width: 6px;
+            height: 6px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: loading 1.4s infinite ease-in-out;
+        }
+
+        .loading-dots:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        .loading-dots:nth-child(3) {
+            animation-delay: -0.32s;
+        }
+
+        @keyframes loading {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+        
+        /* 전역 떠다니는 풍선 스타일 */
+        .global-floating-balloons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        /* 로그인 시 풍선 (기존) */
+        .floating-balloons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .balloon {
+            position: absolute;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef, #fecfef);
+            border-radius: 15px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 
+                0 3px 12px rgba(255, 154, 158, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            animation: balloonFloat 6s ease-in-out infinite;
+            max-width: 120px;
+        }
+        
+        .balloon:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+        
+        .balloon:nth-child(2) {
+            top: 20%;
+            right: 8%;
+            animation-delay: 1s;
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+        }
+        
+        .balloon:nth-child(3) {
+            top: 60%;
+            left: 3%;
+            animation-delay: 2s;
+            background: linear-gradient(135deg, #d299c2, #fef9d7);
+        }
+        
+        .balloon:nth-child(4) {
+            top: 70%;
+            right: 5%;
+            animation-delay: 3s;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+        }
+        
+        .balloon:nth-child(5) {
+            top: 40%;
+            left: 50%;
+            animation-delay: 4s;
+            background: linear-gradient(135deg, #fdbb2d, #22c1c3);
+        }
+        
+        .balloon:nth-child(6) {
+            top: 15%;
+            left: 30%;
+            animation-delay: 5s;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+        }
+        
+        .balloon:nth-child(7) {
+            top: 35%;
+            right: 15%;
+            animation-delay: 6s;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+        
+        .balloon:nth-child(8) {
+            top: 80%;
+            left: 20%;
+            animation-delay: 7s;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+        
+        .balloon:nth-child(9) {
+            top: 25%;
+            left: 70%;
+            animation-delay: 8s;
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+        }
+        
+        .balloon:nth-child(10) {
+            top: 55%;
+            right: 25%;
+            animation-delay: 9s;
+            background: linear-gradient(135deg, #d299c2, #fef9d7);
+        }
+        
+        /* 전역 풍선 위치 (18개) - 로그인창 중앙 영역 피하기 */
+        .global-floating-balloons .balloon:nth-child(1) {
+            top: 3%;
+            left: 2%;
+            animation-delay: 0s;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(2) {
+            top: 8%;
+            right: 2%;
+            animation-delay: 1s;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(3) {
+            top: 15%;
+            left: 5%;
+            animation-delay: 2s;
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(4) {
+            top: 20%;
+            right: 8%;
+            animation-delay: 3s;
+            background: linear-gradient(135deg, #d299c2, #fef9d7);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(5) {
+            top: 25%;
+            left: 10%;
+            animation-delay: 4s;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(6) {
+            top: 30%;
+            right: 12%;
+            animation-delay: 5s;
+            background: linear-gradient(135deg, #fdbb2d, #22c1c3);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(7) {
+            top: 35%;
+            left: 8%;
+            animation-delay: 6s;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(8) {
+            top: 40%;
+            right: 5%;
+            animation-delay: 7s;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(9) {
+            top: 45%;
+            left: 3%;
+            animation-delay: 8s;
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(10) {
+            top: 50%;
+            right: 3%;
+            animation-delay: 9s;
+            background: linear-gradient(135deg, #d299c2, #fef9d7);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(11) {
+            top: 55%;
+            left: 5%;
+            animation-delay: 10s;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(12) {
+            top: 60%;
+            right: 8%;
+            animation-delay: 11s;
+            background: linear-gradient(135deg, #fdbb2d, #22c1c3);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(13) {
+            top: 65%;
+            left: 10%;
+            animation-delay: 12s;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(14) {
+            top: 70%;
+            right: 12%;
+            animation-delay: 13s;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(15) {
+            top: 75%;
+            left: 8%;
+            animation-delay: 14s;
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(16) {
+            top: 80%;
+            right: 5%;
+            animation-delay: 15s;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(17) {
+            top: 85%;
+            left: 3%;
+            animation-delay: 16s;
+            background: linear-gradient(135deg, #48cae4, #023e8a);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(18) {
+            top: 90%;
+            right: 2%;
+            animation-delay: 17s;
+            background: linear-gradient(135deg, #f72585, #b5179e);
+        }
+        
+        @keyframes balloonFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.8) rotate(-5deg);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(0px) scale(1) rotate(0deg);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(-10px) scale(1.05) rotate(2deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9) rotate(5deg);
+            }
+        }
+        
+        /* 전역 풍선을 위한 다양한 애니메이션 */
+        .global-floating-balloons .balloon:nth-child(odd) {
+            animation: balloonFloatSlow 8s ease-in-out infinite;
+        }
+        
+        .global-floating-balloons .balloon:nth-child(even) {
+            animation: balloonFloatFast 5s ease-in-out infinite;
+        }
+        
+        @keyframes balloonFloatSlow {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.7) rotate(-8deg);
+            }
+            15% {
+                opacity: 1;
+                transform: translateY(0px) scale(1) rotate(0deg);
+            }
+            85% {
+                opacity: 1;
+                transform: translateY(-15px) scale(1.1) rotate(3deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-40px) scale(0.8) rotate(8deg);
+            }
+        }
+        
+        @keyframes balloonFloatFast {
+            0% {
+                opacity: 0;
+                transform: translateY(15px) scale(0.9) rotate(-3deg);
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(0px) scale(1) rotate(0deg);
+            }
+            80% {
+                opacity: 1;
+                transform: translateY(-5px) scale(1.02) rotate(1deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-25px) scale(0.95) rotate(3deg);
+            }
+        }
+        
+        /* 풍선에 작은 꼬리 효과 */
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid rgba(255, 154, 158, 0.6);
+        }
+        
+        .balloon:nth-child(1)::after {
+            border-top-color: rgba(168, 237, 234, 0.6);
+        }
+        
+        .balloon:nth-child(2)::after {
+            border-top-color: rgba(255, 236, 210, 0.6);
+        }
+        
+        .balloon:nth-child(3)::after {
+            border-top-color: rgba(210, 153, 194, 0.6);
+        }
+        
+        .balloon:nth-child(4)::after {
+            border-top-color: rgba(137, 247, 254, 0.6);
+        }
+        
+        .balloon:nth-child(5)::after {
+            border-top-color: rgba(253, 187, 45, 0.6);
+        }
+        
+        .balloon:nth-child(6)::after {
+            border-top-color: rgba(255, 154, 158, 0.6);
+        }
+        
+        .balloon:nth-child(7)::after {
+            border-top-color: rgba(255, 154, 158, 0.6);
+        }
+        
+        .balloon:nth-child(8)::after {
+            border-top-color: rgba(168, 237, 234, 0.6);
+        }
+        
+        .balloon:nth-child(9)::after {
+            border-top-color: rgba(255, 236, 210, 0.6);
+        }
+        
+        .balloon:nth-child(10)::after {
+            border-top-color: rgba(210, 153, 194, 0.6);
+        }
+        
+        /* 전역 풍선 꼬리 색상 */
+        .global-floating-balloons .balloon:nth-child(1)::after {
+            border-top-color: rgba(255, 154, 158, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(2)::after {
+            border-top-color: rgba(168, 237, 234, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(3)::after {
+            border-top-color: rgba(255, 236, 210, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(4)::after {
+            border-top-color: rgba(210, 153, 194, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(5)::after {
+            border-top-color: rgba(137, 247, 254, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(6)::after {
+            border-top-color: rgba(253, 187, 45, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(7)::after {
+            border-top-color: rgba(255, 154, 158, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(8)::after {
+            border-top-color: rgba(168, 237, 234, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(9)::after {
+            border-top-color: rgba(255, 236, 210, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(10)::after {
+            border-top-color: rgba(210, 153, 194, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(11)::after {
+            border-top-color: rgba(137, 247, 254, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(12)::after {
+            border-top-color: rgba(253, 187, 45, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(13)::after {
+            border-top-color: rgba(255, 154, 158, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(14)::after {
+            border-top-color: rgba(168, 237, 234, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(15)::after {
+            border-top-color: rgba(255, 236, 210, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(16)::after {
+            border-top-color: rgba(255, 107, 107, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(17)::after {
+            border-top-color: rgba(72, 202, 228, 0.6);
+        }
+        
+        .global-floating-balloons .balloon:nth-child(18)::after {
+            border-top-color: rgba(247, 37, 133, 0.6);
+        }
+        
+        .logo h1 {
+            background: linear-gradient(135deg, #ffffff, #f0f0f0, #e0e0e0) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+        
+        .tagline {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        .footer-content p, .footer-links a {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        /* 장바구니 패널 스타일 - 모달 형태 */
+        .basket-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: none;
+            justify-content: flex-end;
+        }
+        
+        .basket-section.show {
+            display: flex;
+        }
+
+        .basket-panel {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .basket-section.show .basket-panel {
+            transform: translateX(0);
+        }
+
+        .basket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 2px solid #e1e5e9;
+            flex-shrink: 0;
+        }
+
+        .basket-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .basket-header h3 i {
+            color: #ff6b6b;
+        }
+
+        .close-basket-btn {
+            background: #f8f9fa;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .close-basket-btn:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .basket-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px;
+        }
+
+        .empty-basket {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-basket i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .empty-basket p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .basket-item {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .basket-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .basket-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .basket-item-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+            flex: 1;
+        }
+
+        .basket-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .basket-item-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .remove-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .remove-btn:hover {
+            background: #e74c3c;
+            transform: scale(1.1);
+        }
+
+        .view-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .view-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.1);
+        }
+
+        .basket-item-address {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .basket-item-address i {
+            color: #667eea;
+            font-size: 0.8rem;
+        }
+
+        .basket-item-category {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .basket-actions {
+            display: flex;
+            gap: 12px;
+            padding: 20px;
+            flex-shrink: 0;
+            border-top: 1px solid #e1e5e9;
+            padding-top: 15px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .basket-action-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .clear-btn {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #e1e5e9;
+        }
+
+        .clear-btn:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* CARE 추천 코스 섹션 스타일 */
+        .course-recommendation-section {
+            padding: 20px;
+            border-top: 2px solid #e1e5e9;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            flex-shrink: 0;
+            padding: 20px;
+        }
+
+        .course-recommendation-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .course-recommendation-header h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .course-recommendation-header h4 i {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .course-recommendation-header p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .course-recommendation-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 18px 24px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+            text-transform: none;
+            letter-spacing: 0.3px;
+        }
+
+        .course-recommendation-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .course-recommendation-btn:hover::before {
+            left: 100%;
+        }
+
+        .course-recommendation-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .course-recommendation-btn:active {
+            transform: translateY(-1px) scale(1.01);
+        }
+
+        .course-recommendation-btn i {
+            font-size: 1.1rem;
+        }
+
+        .course-btn-icon {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .course-recommendation-btn:hover .course-btn-icon {
+            transform: translateX(3px);
+        }
+
+        .course-recommendation-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .course-recommendation-btn:disabled:hover {
+            transform: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 전역 풍선 컨테이너 -->
+        <div class="global-floating-balloons">
+            <div class="balloon">🎉 완벽한 추천!</div>
+            <div class="balloon">✨ 마음에 들어요</div>
+            <div class="balloon">💫 신기해요</div>
+            <div class="balloon">🌟 정말 좋아요</div>
+            <div class="balloon">🎈 친구들도 좋아해요</div>
+            <div class="balloon">💝 특별해요</div>
+            <div class="balloon">🎊 만족해요</div>
+            <div class="balloon">🌈 매일 써요</div>
+            <div class="balloon">🎁 감동이에요</div>
+            <div class="balloon">🚀 새로운 발견!</div>
+            <div class="balloon">💖 마음에 들어요</div>
+            <div class="balloon">🎯 완벽해요</div>
+            <div class="balloon">🌟 추천해요</div>
+            <div class="balloon">🎨 창의적이에요</div>
+            <div class="balloon">🎪 즐거워요</div>
+            <div class="balloon">🔥 만족!</div>
+            <div class="balloon">💯 최고예요</div>
+            <div class="balloon">😍 감동!</div>
+        </div>
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <h1>CARE</h1>
+                </div>
+                <p class="tagline">Customized AI Recommendation Engine</p>
+                <div class="header-actions">
+                    <button class="header-basket-btn" onclick="toggleBasket()">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span>내 장바구니</span>
+                        <span class="basket-count" id="basketCount">0</span>
+                    </button>
+                    <div id="loginSection" class="user-info-header" style="display: none;">
+                        <span id="userWelcome" class="user-welcome"></span>
+                        <button id="logoutBtn" class="header-logout-btn" onclick="handleLogout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            로그아웃
+                        </button>
+                    </div>
+                    <button id="loginBtn" class="header-login-btn" onclick="goToLogin()">
+                        <i class="fas fa-sign-in-alt"></i>
+                        로그인
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Main CTA Section -->
+            <section class="main-cta-section">
+                <div class="cta-container">
+                    <div class="cta-content">
+                        <h1 class="cta-title">CARE와 함께 시작하세요</h1>
+                        <p class="cta-description">CARE AI와 함께 새로운 경험을 발견해보세요</p>
+                        
+                        <div class="selection-buttons-container">
+                            <button id="customRecommendBtn" class="selection-btn custom-btn" onclick="startCustomRecommendation()">
+                                <i class="fas fa-robot"></i>
+                                <div class="btn-title">CARE AI 시작</div>
+                                <div class="btn-description">지역과 카테고리를 직접 선택하여<br>맞춤형 장소를 추천받으세요</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <!-- Introduction Section -->
+
+            <section class="introduction-section">
+                <div class="intro-container">
+                    <div class="intro-content">
+                        <h2 class="intro-title">CARE는 당신의 마음을 읽습니다</h2>
+                        <p class="intro-description">
+                            CARE는 당신의 감정과 상황을 이해하고, 지금 필요한 최적의 선택을 추천합니다.
+                        </p>
+                        <div class="intro-quote">
+                            <p>"때로는 우리가 정확히 무엇을 원하는지 모를 때가 있습니다. CARE는 그런 순간에 당신의 마음 깊은 곳에서 진정으로 원하는 것을 찾아드립니다."</p>
+                        </div>
+                        <div class="intro-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-puzzle-piece"></i>
+                                </div>
+                                <h3>맞춤형 경험</h3>
+                                <p> 당신의 상황과 취향을 고려한 맞춤형 추천을 통해 매번 새로운 경험을 제공합니다.</p>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-balance-scale"></i>
+                                </div>
+                                <h3>삶의 균형</h3>
+                                <p> 공부·일·휴식 사이에서 균형을 찾을 수 있도록 작은 선택을 도와드립니다.</p>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                </div>
+                                <h3>간편한 이용</h3>
+                                <p> 복잡한 설정 없이 바로 사용할 수 있는 직관적인 추천 서비스입니다.</p>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-seedling"></i>
+                                </div>
+                                <h3>성장과 회복</h3>
+                                <p> 힘든 순간에는 회복을, 여유로운 순간에는 성장을 위한 선택을 제안합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Description Section -->
+            <section class="description-section">
+                <div class="description-container">
+                    <h2>CARE는 어떻게 작동하나요?</h2>
+                    <div class="description-content">
+                        <div class="description-text">
+                            <p class="main-description">
+                                CARE는 텍스트 기반의 대화를 통해 당신의 기분과 상황을 분석합니다.
+                            </p>
+                            <p class="sub-description">
+                                그 결과를 바탕으로 가고 싶은 장소, 어울리는 음식, 영감을 줄 책, 그리고 하루를 더 잘 보내기 위한 라이프 플래너까지 제안합니다.
+                            </p>
+                        </div>
+                        <div class="description-features">
+                            <div class="desc-feature">
+                                <div class="desc-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <h3>텍스트 대화</h3>
+                                <p>자연스러운 대화를 통해 당신의 마음을 읽어냅니다</p>
+                            </div>
+                            <div class="desc-feature">
+                                <div class="desc-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h3>상황 분석</h3>
+                                <p>AI가 당신의 기분과 상황을 깊이 있게 분석합니다</p>
+                            </div>
+                            <div class="desc-feature">
+                                <div class="desc-icon">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <h3>맞춤 제안</h3>
+                                <p>장소, 음식, 책, 라이프 플래너까지 종합적인 추천을 제공합니다</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 스토리 섹션 -->
+            <section class="story-section">
+                <div class="story-container">
+                    <h2 class="story-title">CARE를 만든 사연</h2>
+                    <p class="story-subtitle">왜 CARE를 만들게 되었을까요?</p>
+                    
+                    <div class="story-content">
+                        <p class="story-text">
+                            개발자는 원래 맛집 탐방, 카페 투어, 여행 다니는 걸 정말 좋아합니다.
+                        </p>
+                        
+                        <p class="story-text">
+                            하지만 기존 지도 앱이나 맛집 추천 사이트를 쓰다 보면 늘 아쉬움이 있었어요.
+                            인원수, 예산, 분위기 같은 제 상황을 세세하게 고려해서 장소를 추천해주는 서비스는 찾기 힘들었고, 
+                            매번 조건을 하나하나 맞춰가며 검색하는 게 번거로웠습니다.
+                        </p>
+                        
+                        <div class="story-highlight">
+                            또, 개발자가 직접 찾아가 본 좋은 장소들을 기록해두고, 친구들과 공유하거나 나중에 다시 꺼내 보면서<br>
+                            "아, 여기 진짜 좋았지!" 하고 추억할 수 있는 기능도 필요했는데, 그런 걸 제대로 제공해주는 곳도 없었죠.
+                        </div>
+                        
+                        <p class="story-text">
+                            그래서 결국 직접 만들기 시작했습니다.<br>
+                            단순히 검색을 넘어, 사용자의 상황에 맞춰 맞춤형 장소를 추천해주고,<br>
+                            개발자가 경험한 장소를 저장하고 공유하며, 다시 추억할 수 있는 플랫폼이 필요하다 생각했거든요.
+                        </p>
+                        
+                        <div class="story-signature">
+                            그 결과물이 바로 CARE – Customized AI Recommendation Engine입니다.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 회원 후기 섹션 -->
+            <section class="reviews-section">
+                <div class="reviews-container">
+                    <h2 class="reviews-title">회원들의 찐후기</h2>
+                    <p class="reviews-subtitle">CARE를 사용하는 회원들의 생생한 경험담을 들어보세요</p>
+                    
+                    <div class="reviews-grid">
+                        <div class="review-card">
+                            <div class="review-content">
+                                기념일마다 어디 갈지 고민했는데, CARE에 저장해둔 리스트에서 바로 고를 수 있어서 편했어요. 매번 장소 검색하던 스트레스가 확 줄었네요.
+                            </div>
+                            <div class="review-author">김민지님</div>
+                        </div>
+                        
+                        <div class="review-card">
+                            <div class="review-content">
+                                친구들이랑 모임 장소 정할 때 의견이 갈리곤 했는데, CARE에서 추천받고 투표까지 해서 쉽게 정했어요. 시간 절약 확실히 됩니다.
+                            </div>
+                            <div class="review-author">박지훈님</div>
+                        </div>
+                        
+                        <div class="review-card">
+                            <div class="review-content">
+                                부모님 모실만한 조용한 식당 찾기가 어려웠는데 CARE 추천이 정말 도움이 됐어요. 분위기도 좋고 위치도 딱 맞았어요.
+                            </div>
+                            <div class="review-author">이수진님</div>
+                        </div>
+                        
+                        <div class="review-card">
+                            <div class="review-content">
+                                저는 예산이 항상 제한적인데 CARE가 조건에 맞춰 추천해주니까 괜찮은 가성비 맛집들을 많이 알게 됐습니다.
+                            </div>
+                            <div class="review-author">최영호님</div>
+                        </div>
+                        
+                        <div class="review-card">
+                            <div class="review-content">
+                                여자친구랑 데이트할 때 맨날 가던 카페 말고 색다른 곳을 찾고 싶었는데, CARE 덕분에 분위기 좋은 루프탑 카페를 발견했어요.
+                            </div>
+                            <div class="review-author">정민수님</div>
+                        </div>
+                        
+                        <div class="review-card">
+                            <div class="review-content">
+                                출장으로 다른 도시 갔을 때 CARE에서 근처 추천을 받아봤는데, 현지 로컬 맛집을 쉽게 찾을 수 있었습니다.
+                            </div>
+                            <div class="review-author">한소영님</div>
+                        </div>
+                        
+                        <div class="review-card">
+                            <div class="review-content">
+                                저는 미리 장소를 저장해두는 걸 좋아하는데, CARE에서 하트 눌러 장바구니처럼 모아두니까 필요할 때 금방 꺼내 쓸 수 있어서 좋아요.
+                            </div>
+                            <div class="review-author">강태현님</div>
+                        </div>
+                        
+                        <div class="review-card">
+                            <div class="review-content">
+                                카카오맵이나 네이버지도보다 CARE가 좋은 건, 제가 입력한 '상황'에 맞게 추천해준다는 점이에요. 단순히 검색이 아니라 맥락이 있어서 유용합니다.
+                            </div>
+                            <div class="review-author">윤서연님</div>
+                        </div>
+                        
+                        <div class="review-card">
+                            <div class="review-content">
+                                동창 모임 장소를 고르는데 CARE에서 조건 넣으니까 딱 맞는 식당이 추천돼서, 다들 신기하다고 하더라고요.
+                            </div>
+                            <div class="review-author">오준석님</div>
+                        </div>
+                    </div>
+                    
+                    <div class="reviews-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">10,000+</span>
+                            <div class="stat-label">만족한 회원</div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">50,000+</span>
+                            <div class="stat-label">추천된 장소</div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">98%</span>
+                            <div class="stat-label">만족도</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Section -->
+            <section class="loading-section" id="loadingSection" style="display: none;">
+            <div class="loading-container">
+                <div class="loading-spinner">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>당신의 마음을 읽고 있어요...</h3>
+                <p>완벽한 추천을 찾기 위해 AI가 열심히 생각하고 있습니다</p>
+            </div>
+            </section>
+
+            <!-- 장바구니 및 CARE 추천코스 섹션 -->
+            <section class="basket-section" id="basketSection" onclick="closeBasketOnBackground(event)">
+                <div class="basket-panel" id="basketPanel" onclick="event.stopPropagation()">
+                    <div class="basket-header">
+                        <h3><i class="fas fa-shopping-basket"></i> 내 장소 바구니</h3>
+                        <button class="close-basket-btn" onclick="toggleBasket()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="basket-content" id="basketContent">
+                        <div class="empty-basket">
+                            <i class="fas fa-shopping-basket"></i>
+                            <p>아직 저장된 장소가 없습니다</p>
+                            <p>추천 장소에서 하트 버튼을 눌러 저장해보세요!</p>
+                        </div>
+                    </div>
+                    <div class="basket-actions">
+                        <button class="basket-action-btn clear-btn" onclick="clearBasket()">
+                            <i class="fas fa-trash"></i>
+                            전체 삭제
+                        </button>
+                        <button class="basket-action-btn share-btn" onclick="shareBasket()">
+                            <i class="fas fa-share"></i>
+                            바구니 공유
+                        </button>
+                    </div>
+                    
+                    <!-- CARE 추천 코스 만들기 버튼 -->
+                    <div class="course-recommendation-section" id="courseRecommendationSection" style="display: none;">
+                        <div class="course-recommendation-header">
+                            <h4><i class="fas fa-route"></i> CARE 추천 장소 코스</h4>
+                            <p>저장된 장소들을 최적의 순서로 추천해드려요!</p>
+                        </div>
+                        <button class="course-recommendation-btn" onclick="generateCourseRecommendation()">
+                            <i class="fas fa-magic"></i>
+                            <span>CARE 추천 장소 코스 만들기</span>
+                            <div class="course-btn-icon">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2>추천 결과</h2>
+                    <button id="newSearchBtn" class="new-search-btn">
+                        <i class="fas fa-plus"></i>
+                        새로운 검색
+                    </button>
+                </div>
+                
+                <div class="results-content" id="resultsContent">
+                    <!-- 추천 결과가 여기에 동적으로 추가됩니다 -->
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2024 CARE - Customized AI Recommendation Engine</p>
+                <div class="footer-links">
+                    <a href="#" onclick="showAbout()">소개</a>
+                    <a href="#" onclick="showPrivacy()">개인정보처리방침</a>
+                    <a href="#" onclick="showContact()">문의</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal for additional info -->
+    <div class="modal" id="infoModal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="config.js?v=1.0.1"></script>
+    <script src="auth.js?v=1.0.1"></script>
+    <script src="script.js?v=1.0.1"></script>
+    
+    <script>
+        // 바구니 관련 함수들
+        let basketPlaces = [];
+
+        // 바구니 토글
+        function toggleBasket() {
+            const basketSection = document.getElementById('basketSection');
+            if (basketSection) {
+                const isVisible = basketSection.classList.contains('show');
+                if (isVisible) {
+                    basketSection.classList.remove('show');
+                } else {
+                    basketSection.classList.add('show');
+                    loadBasketData();
+                    renderBasket();
+                    updateCourseRecommendationVisibility();
+                }
+            }
+        }
+
+        // 배경 클릭으로 바구니 닫기
+        function closeBasketOnBackground(event) {
+            if (event.target === event.currentTarget) {
+                toggleBasket();
+            }
+        }
+
+        // 바구니 데이터 로드
+        function loadBasketData() {
+            const savedBasket = localStorage.getItem('care_basket_places');
+            if (savedBasket) {
+                try {
+                    basketPlaces = JSON.parse(savedBasket);
+                    updateBasketCount();
+                } catch (error) {
+                    console.error('바구니 데이터 로드 오류:', error);
+                    basketPlaces = [];
+                }
+            }
+        }
+
+        // 바구니 카운트 업데이트
+        function updateBasketCount() {
+            const basketCount = document.getElementById('basketCount');
+            if (basketCount) {
+                basketCount.textContent = basketPlaces.length;
+            }
+        }
+
+        // 바구니 렌더링
+        function renderBasket() {
+            const basketContent = document.getElementById('basketContent');
+            if (!basketContent) return;
+            
+            if (basketPlaces.length === 0) {
+                basketContent.innerHTML = `
+                    <div class="empty-basket">
+                        <i class="fas fa-shopping-basket"></i>
+                        <p>아직 저장된 장소가 없습니다</p>
+                        <p>추천 장소에서 하트 버튼을 눌러 저장해보세요!</p>
+                    </div>
+                `;
+            } else {
+                basketContent.innerHTML = basketPlaces.map(place => `
+                    <div class="basket-item">
+                        <div class="basket-item-header">
+                            <h4 class="basket-item-name">${place.place_name}</h4>
+                            <div class="basket-item-actions">
+                                <button class="basket-item-btn view-btn" onclick="showPlaceOnMap('${place.x}', '${place.y}', '${place.place_name}')" title="지도에서 보기">
+                                    <i class="fas fa-map"></i>
+                                </button>
+                                <button class="basket-item-btn remove-btn" onclick="removeFromBasket('${place.place_name}', '${place.road_address_name}')" title="바구니에서 제거">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="basket-item-address">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${place.road_address_name || place.address_name}
+                        </div>
+                        <div class="basket-item-category">${place.category_group_code || '기타'}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // 바구니에서 장소 제거
+        function removeFromBasket(placeName, address) {
+            const index = basketPlaces.findIndex(p => 
+                p.place_name === placeName && p.road_address_name === address
+            );
+            
+            if (index !== -1) {
+                basketPlaces.splice(index, 1);
+                localStorage.setItem('care_basket_places', JSON.stringify(basketPlaces));
+                updateBasketCount();
+                renderBasket();
+                updateCourseRecommendationVisibility();
+                showToast('장소가 바구니에서 제거되었습니다.', 'success');
+            }
+        }
+
+        // 바구니 비우기
+        function clearBasket() {
+            if (basketPlaces.length === 0) {
+                showToast('바구니가 이미 비어있습니다.', 'info');
+                return;
+            }
+            
+            if (confirm('바구니의 모든 장소를 삭제하시겠습니까?')) {
+                basketPlaces = [];
+                localStorage.setItem('care_basket_places', JSON.stringify(basketPlaces));
+                updateBasketCount();
+                renderBasket();
+                updateCourseRecommendationVisibility();
+                showToast('바구니가 비워졌습니다.', 'success');
+            }
+        }
+
+        // 바구니 공유
+        function shareBasket() {
+            if (basketPlaces.length === 0) {
+                showToast('공유할 장소가 없습니다.', 'info');
+                return;
+            }
+            
+            const shareText = `CARE에서 추천받은 장소들:\n\n` + 
+                basketPlaces.map((place, index) => 
+                    `${index + 1}. ${place.place_name}\n   📍 ${place.road_address_name}`
+                ).join('\n\n');
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'CARE 추천 장소 바구니',
+                    text: shareText
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('바구니 내용이 클립보드에 복사되었습니다!', 'success');
+                });
+            }
+        }
+
+        // 코스 추천 버튼 표시/숨김 업데이트
+        function updateCourseRecommendationVisibility() {
+            const courseSection = document.getElementById('courseRecommendationSection');
+            if (!courseSection) return;
+            
+            const placeCount = basketPlaces ? basketPlaces.length : 0;
+            
+            if (placeCount >= 2) {
+                courseSection.style.display = 'block';
+            } else {
+                courseSection.style.display = 'none';
+            }
+        }
+
+        // CARE 추천 코스 생성
+        function generateCourseRecommendation() {
+            if (!basketPlaces || basketPlaces.length < 2) {
+                showToast('최소 2개 이상의 장소가 필요합니다.', 'error');
+                return;
+            }
+            
+            // 간단한 코스 생성 (실제로는 AI를 사용할 수 있음)
+            const course = {
+                title: 'CARE 추천 장소 코스',
+                places: basketPlaces.map((place, index) => ({
+                    order: index + 1,
+                    name: place.place_name,
+                    address: place.road_address_name || place.address_name,
+                    category: place.category_group_code || '기타',
+                    x: place.x,
+                    y: place.y
+                })),
+                totalTime: basketPlaces.length * 60, // 1시간씩 가정
+                totalDistance: '약 5km' // 예시
+            };
+            
+            displayCourseRecommendation(course);
+        }
+
+        // 코스 추천 결과 표시
+        function displayCourseRecommendation(course) {
+            const courseSection = document.getElementById('courseRecommendationSection');
+            if (!courseSection) return;
+            
+            const courseContainer = document.createElement('div');
+            courseContainer.className = 'course-result-container';
+            courseContainer.innerHTML = `
+                <div class="course-result-header">
+                    <h3><i class="fas fa-route"></i> ${course.title}</h3>
+                    <div class="course-summary">
+                        <div class="summary-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${course.places.length}개 장소</span>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-clock"></i>
+                            <span>약 ${Math.floor(course.totalTime / 60)}시간</span>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-route"></i>
+                            <span>${course.totalDistance}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-places">
+                    ${course.places.map(place => `
+                        <div class="course-place-item">
+                            <div class="place-order">${place.order}</div>
+                            <div class="place-info">
+                                <div class="place-name">${place.name}</div>
+                                <div class="place-address">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    ${place.address}
+                                </div>
+                                <div class="place-category">${place.category}</div>
+                            </div>
+                            <div class="place-details">
+                                <div class="place-time">
+                                    <i class="fas fa-clock"></i>
+                                    <span>1시간</span>
+                                </div>
+                                <div class="place-duration">
+                                    <i class="fas fa-walking"></i>
+                                    <span>도보 5분</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="course-tips">
+                    <h4><i class="fas fa-lightbulb"></i> 코스 팁</h4>
+                    <ul>
+                        <li>각 장소에서 충분히 시간을 가지고 즐기세요</li>
+                        <li>교통편을 미리 확인하고 이동하세요</li>
+                        <li>날씨에 따라 옷차림을 준비하세요</li>
+                    </ul>
+                </div>
+                
+                <div class="course-actions">
+                    <button class="course-action-btn" onclick="shareCourse()">
+                        <i class="fas fa-share"></i>
+                        코스 공유
+                    </button>
+                    <button class="course-action-btn" onclick="saveCourse()">
+                        <i class="fas fa-bookmark"></i>
+                        코스 저장
+                    </button>
+                </div>
+            `;
+            
+            // 기존 결과가 있으면 제거
+            const existingResult = courseSection.querySelector('.course-result-container');
+            if (existingResult) {
+                existingResult.remove();
+            }
+            
+            courseSection.appendChild(courseContainer);
+        }
+
+        // 코스 공유
+        function shareCourse() {
+            const courseContainer = document.querySelector('.course-result-container');
+            if (!courseContainer) return;
+            
+            const courseTitle = courseContainer.querySelector('h3').textContent;
+            const places = Array.from(courseContainer.querySelectorAll('.course-place-item')).map((item, index) => {
+                const name = item.querySelector('.place-name').textContent;
+                const address = item.querySelector('.place-address span').textContent;
+                return `${index + 1}. ${name} - ${address}`;
+            }).join('\n');
+            
+            const shareText = `${courseTitle}\n\n${places}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: courseTitle,
+                    text: shareText
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('코스가 클립보드에 복사되었습니다!', 'success');
+                });
+            }
+        }
+
+        // 코스 저장
+        function saveCourse() {
+            showToast('코스가 저장되었습니다!', 'success');
+        }
+
+        // 지도에서 장소 보기
+        function showPlaceOnMap(x, y, name) {
+            // 카카오맵이나 다른 지도 서비스로 이동
+            const mapUrl = `https://map.kakao.com/link/map/${name},${y},${x}`;
+            window.open(mapUrl, '_blank');
+        }
+
+        // 토스트 메시지 표시
+        function showToast(message, type = 'info') {
+            // 간단한 토스트 메시지 구현
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 1000;
+                font-size: 14px;
+                font-weight: 500;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+
+        // 페이지 로드 시 바구니 데이터 로드
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBasketData();
+        });
+    </script>
+</body>
+</html>

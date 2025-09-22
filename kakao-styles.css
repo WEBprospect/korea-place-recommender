@@ -1,0 +1,594 @@
+/* 카카오 API 연동을 위한 추가 스타일 */
+
+/* 챗팅 인터페이스 스타일 */
+.chat-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chat-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.chat-header h2 {
+    color: #374151;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.chat-header h2 i {
+    color: #6366f1;
+}
+
+.chat-header p {
+    color: #6b7280;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.chat-messages {
+    height: 400px;
+    overflow-y: auto;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.chat-message {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.user-message {
+    flex-direction: row-reverse;
+}
+
+.user-message .message-content {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border-radius: 18px 18px 4px 18px;
+}
+
+.bot-message .message-content {
+    background: white;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px 18px 18px 4px;
+}
+
+.message-content {
+    padding: 0.75rem 1rem;
+    max-width: 70%;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message-content i {
+    font-size: 0.9rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+.user-message .message-content i {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.bot-message .message-content i {
+    color: #6366f1;
+}
+
+.message-content p {
+    margin: 0;
+    line-height: 1.4;
+    font-size: 0.9rem;
+}
+
+.chat-input-container {
+    margin-bottom: 1.5rem;
+}
+
+.chat-form {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.chat-form input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.chat-form input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.chat-send-btn {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.chat-send-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.quick-actions {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.quick-actions p {
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.9rem;
+}
+
+.quick-action-btn {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quick-action-btn:hover {
+    background: #6366f1;
+    color: white;
+    border-color: #6366f1;
+    transform: translateY(-1px);
+}
+
+.quick-action-btn i {
+    font-size: 0.8rem;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .chat-container {
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    
+    .chat-messages {
+        height: 300px;
+    }
+    
+    .message-content {
+        max-width: 85%;
+    }
+    
+    .chat-form {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .chat-send-btn {
+        width: 100%;
+        height: 40px;
+        border-radius: 20px;
+    }
+    
+    .quick-action-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+/* 검색 폼 스타일 */
+.search-form-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.search-form-container h2 {
+    text-align: center;
+    color: #374151;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.search-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.search-button {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: fit-content;
+}
+
+.search-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.quick-search {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+}
+
+.quick-search p {
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+    color: #374151;
+}
+
+.quick-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.quick-button {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-button:hover {
+    background: #6366f1;
+    color: white;
+    border-color: #6366f1;
+    transform: translateY(-1px);
+}
+
+/* 지도 섹션 스타일 */
+.map-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.map-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem 0;
+    color: #374151;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.map-section h3 i {
+    color: #6366f1;
+}
+
+#map {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.map-info {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 6px;
+    border-left: 4px solid #6366f1;
+}
+
+.map-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.map-info i {
+    color: #6366f1;
+    font-size: 0.8rem;
+}
+
+/* 장소 리스트 스타일 */
+.place-list-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.place-list-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem 0;
+    color: #374151;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.place-list-section h3 i {
+    color: #6366f1;
+}
+
+.place-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.place-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.place-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #6366f1;
+}
+
+.place-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.place-name {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.4;
+}
+
+.place-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.action-button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.call-button {
+    background: #10b981;
+    color: white;
+}
+
+.call-button:hover {
+    background: #059669;
+    transform: scale(1.05);
+}
+
+.directions-button {
+    background: #6366f1;
+    color: white;
+}
+
+.directions-button:hover {
+    background: #4f46e5;
+    transform: scale(1.05);
+}
+
+.share-button {
+    background: #8b5cf6;
+    color: white;
+}
+
+.share-button:hover {
+    background: #7c3aed;
+    transform: scale(1.05);
+}
+
+.place-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.place-address,
+.place-phone,
+.place-coordinates {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.place-address i {
+    color: #ef4444;
+    width: 14px;
+    text-align: center;
+}
+
+.place-phone i {
+    color: #10b981;
+    width: 14px;
+    text-align: center;
+}
+
+.place-coordinates i {
+    color: #6366f1;
+    width: 14px;
+    text-align: center;
+}
+
+.place-address span,
+.place-phone span,
+.place-coordinates span {
+    flex: 1;
+    word-break: break-all;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .search-form {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .search-button {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .quick-buttons {
+        justify-content: center;
+    }
+    
+    .place-list-section {
+        padding: 1.5rem;
+    }
+    
+    .place-card {
+        padding: 1rem;
+    }
+    
+    .place-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .place-actions {
+        justify-content: center;
+    }
+    
+    .place-name {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+    
+    .place-details {
+        gap: 0.5rem;
+    }
+    
+    .place-address,
+    .place-phone,
+    .place-coordinates {
+        font-size: 0.85rem;
+    }
+    
+    #map {
+        height: 300px !important;
+    }
+}

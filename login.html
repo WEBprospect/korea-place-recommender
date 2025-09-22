@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - CARE</title>
+    <link rel="stylesheet" href="styles.css?v=1.0.1">
+    <link rel="stylesheet" href="kakao-styles.css?v=1.0.1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="CARE - 당신만을 위한 맞춤형 AI 추천 엔진">
+    <style>
+        /* 인라인 CSS - 배경 확실히 적용 */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) !important;
+            background-attachment: fixed !important;
+            min-height: 100vh !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .app-container {
+            min-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(20px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+        
+        .footer {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(20px) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+        
+        /* 로그인 페이지 전용 스타일 */
+        .login-page-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .login-header .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .login-header .logo i {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-right: 15px;
+        }
+        
+        .login-header .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .login-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 20px 0;
+        }
+        
+        .login-info p {
+            margin: 0;
+            color: #667eea;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .login-info i {
+            color: #667eea;
+        }
+        
+        .login-notice {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+        
+        .login-notice p {
+            margin: 0;
+            color: #10b981;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .login-notice i {
+            color: #10b981;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+        }
+        
+        .login-btn, .register-btn {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .register-btn {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .register-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .back-to-main {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-to-main:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .logo h1 {
+            background: linear-gradient(135deg, #ffffff, #f0f0f0, #e0e0e0) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+        
+        .tagline {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        .footer-content p, .footer-links a {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <h1>CARE</h1>
+                </div>
+                <p class="tagline">Customized AI Recommendation Engine</p>
+            </div>
+        </header>
+
+        <!-- Back to Main Button -->
+        <a href="index.html" class="back-to-main">
+            <i class="fas fa-arrow-left"></i>
+            메인으로 돌아가기
+        </a>
+
+        <!-- Login Page Content -->
+        <main class="login-page-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="logo">
+                        <i class="fas fa-user-circle"></i>
+                        <h1>로그인</h1>
+                    </div>
+                    <p>CARE에 로그인하여 개인화된 추천을 받아보세요</p>
+                    <div class="login-notice">
+                        <p><i class="fas fa-info-circle"></i> 회원가입 후 로그인하시면 CARE의 모든 기능을 이용하실 수 있습니다.</p>
+                    </div>
+                </div>
+                
+                <form id="loginForm" class="login-form-content">
+                    <div class="form-group">
+                        <label for="username">아이디</label>
+                        <input type="text" id="username" name="username" required placeholder="회원가입한 아이디를 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">비밀번호</label>
+                        <input type="password" id="password" name="password" required placeholder="회원가입한 비밀번호를 입력하세요">
+                    </div>
+                    <div class="login-info">
+                        <p><i class="fas fa-info-circle"></i> 회원가입된 아이디와 비밀번호로만 로그인 가능합니다.</p>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="login-btn">로그인</button>
+                        <button type="button" class="register-btn" onclick="showRegisterForm()">회원가입</button>
+                    </div>
+                </form>
+                
+                <!-- Register Form (Hidden by default) -->
+                <form id="registerForm" class="login-form-content" style="display: none;">
+                    <div class="login-header">
+                        <div class="logo">
+                            <i class="fas fa-user-plus"></i>
+                            <h1>회원가입</h1>
+                        </div>
+                        <p>CARE에 가입하여 개인화된 추천을 받아보세요</p>
+                        <div class="login-notice">
+                            <p><i class="fas fa-info-circle"></i> 회원가입 후 자동으로 로그인되어 CARE 서비스를 이용하실 수 있습니다.</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="regUsername">아이디</label>
+                        <input type="text" id="regUsername" name="username" required placeholder="사용할 아이디를 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">비밀번호</label>
+                        <input type="password" id="regPassword" name="password" required placeholder="6자 이상의 비밀번호를 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="regPasswordConfirm">비밀번호 확인</label>
+                        <input type="password" id="regPasswordConfirm" name="confirmPassword" required placeholder="비밀번호를 다시 입력하세요">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="register-btn">회원가입</button>
+                        <button type="button" class="login-btn" onclick="showLoginForm()">로그인으로 돌아가기</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2024 CARE - Customized AI Recommendation Engine</p>
+                <div class="footer-links">
+                    <a href="#" onclick="showAbout()">소개</a>
+                    <a href="#" onclick="showPrivacy()">개인정보처리방침</a>
+                    <a href="#" onclick="showContact()">문의</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 간단하고 확실한 로그인/회원가입 시스템
+        let users = [];
+        
+        // 전역 변수 초기화 확인
+        console.log('전역 users 변수 초기화:', users);
+        console.log('users 타입:', typeof users);
+        console.log('users가 배열인가?', Array.isArray(users));
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== DOM 로드 완료, 초기화 시작 ===');
+            
+            try {
+                // 사용자 데이터 로드
+                loadUsers();
+                console.log('사용자 데이터 로드 완료');
+                
+                // 이벤트 리스너 설정
+                setupEventListeners();
+                console.log('이벤트 리스너 설정 완료');
+                
+                // 폼 요소 확인
+                const loginForm = document.getElementById('loginForm');
+                const registerForm = document.getElementById('registerForm');
+                console.log('로그인 폼 존재:', !!loginForm);
+                console.log('회원가입 폼 존재:', !!registerForm);
+                
+                console.log('=== 초기화 완료 ===');
+            } catch (error) {
+                console.error('초기화 중 오류 발생:', error);
+                alert('페이지 초기화 중 오류가 발생했습니다: ' + error.message);
+            }
+        });
+        
+        // 사용자 데이터 로드
+        function loadUsers() {
+            console.log('=== 사용자 데이터 로드 시작 ===');
+            const savedUsers = localStorage.getItem('care_users');
+            
+            if (savedUsers) {
+                try {
+                    const parsedUsers = JSON.parse(savedUsers);
+                    console.log('파싱된 사용자 데이터:', parsedUsers);
+                    
+                    // 배열인지 확인
+                    if (Array.isArray(parsedUsers)) {
+                        users = parsedUsers;
+                        console.log('저장된 사용자 목록 로드됨:', users);
+                    } else {
+                        console.error('저장된 데이터가 배열이 아님:', parsedUsers);
+                        users = getDefaultUsers();
+                        saveUsers();
+                    }
+                } catch (error) {
+                    console.error('사용자 목록 로드 오류:', error);
+                    users = getDefaultUsers();
+                    saveUsers();
+                }
+            } else {
+                console.log('기본 사용자 목록 생성');
+                users = getDefaultUsers();
+                saveUsers();
+            }
+            
+            // 최종 확인
+            console.log('최종 users 배열:', users);
+            console.log('users 타입:', typeof users);
+            console.log('users가 배열인가?', Array.isArray(users));
+        }
+        
+        // 기본 사용자 목록
+        function getDefaultUsers() {
+            return [
+                { username: 'admin', password: 'admin123', email: 'admin@care.com', createdAt: new Date().toISOString() },
+                { username: 'test', password: 'test123', email: 'test@care.com', createdAt: new Date().toISOString() }
+            ];
+        }
+        
+        // 사용자 데이터 저장
+        function saveUsers() {
+            try {
+                // users 배열 확인
+                if (!users || !Array.isArray(users)) {
+                    console.error('저장할 users 배열이 올바르지 않음');
+                    users = getDefaultUsers();
+                }
+                
+                localStorage.setItem('care_users', JSON.stringify(users));
+                console.log('사용자 목록 저장됨:', users);
+                console.log('저장된 데이터 타입:', typeof users);
+                console.log('저장된 데이터가 배열인가?', Array.isArray(users));
+            } catch (error) {
+                console.error('사용자 데이터 저장 중 오류:', error);
+                // 기본 사용자로 초기화
+                users = getDefaultUsers();
+                localStorage.setItem('care_users', JSON.stringify(users));
+            }
+        }
+        
+        // 이벤트 리스너 설정
+        function setupEventListeners() {
+            console.log('=== 이벤트 리스너 설정 시작 ===');
+            
+            try {
+                // 로그인 폼
+                const loginForm = document.getElementById('loginForm');
+                if (loginForm) {
+                    console.log('로그인 폼 이벤트 리스너 설정');
+                    loginForm.addEventListener('submit', handleLogin);
+                    console.log('로그인 폼 이벤트 리스너 설정 완료');
+                } else {
+                    console.error('로그인 폼을 찾을 수 없습니다!');
+                    alert('로그인 폼을 찾을 수 없습니다!');
+                }
+                
+                // 회원가입 폼
+                const registerForm = document.getElementById('registerForm');
+                if (registerForm) {
+                    console.log('회원가입 폼 이벤트 리스너 설정');
+                    registerForm.addEventListener('submit', handleRegister);
+                    console.log('회원가입 폼 이벤트 리스너 설정 완료');
+                } else {
+                    console.error('회원가입 폼을 찾을 수 없습니다!');
+                    alert('회원가입 폼을 찾을 수 없습니다!');
+                }
+                
+                // 버튼 이벤트 리스너 추가 설정
+                setupButtonListeners();
+                
+                console.log('=== 이벤트 리스너 설정 완료 ===');
+            } catch (error) {
+                console.error('이벤트 리스너 설정 중 오류:', error);
+                alert('이벤트 리스너 설정 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+        
+        // 버튼 이벤트 리스너 추가 설정
+        function setupButtonListeners() {
+            console.log('=== 버튼 이벤트 리스너 추가 설정 ===');
+            
+            try {
+                // 모든 버튼에 클릭 이벤트 리스너 추가
+                const buttons = document.querySelectorAll('button');
+                buttons.forEach((button, index) => {
+                    console.log(`버튼 ${index + 1} 설정:`, button.textContent);
+                    
+                    // onclick 속성이 없는 버튼에만 이벤트 리스너 추가
+                    if (!button.onclick) {
+                        button.addEventListener('click', function(e) {
+                            console.log('버튼 클릭됨:', this.textContent);
+                        });
+                    }
+                });
+                
+                console.log('버튼 이벤트 리스너 추가 설정 완료');
+            } catch (error) {
+                console.error('버튼 이벤트 리스너 설정 중 오류:', error);
+            }
+        }
+        
+        // 로그인 처리
+        function handleLogin(event) {
+            console.log('=== 로그인 함수 호출됨 ===');
+            event.preventDefault();
+            
+            try {
+                console.log('로그인 시도 중...');
+                
+                // users 배열 확인 및 초기화
+                if (!users || !Array.isArray(users)) {
+                    console.error('users 배열이 올바르지 않음, 초기화 시도');
+                    users = getDefaultUsers();
+                    saveUsers();
+                }
+                
+                console.log('현재 사용자 목록:', users);
+                console.log('users 타입:', typeof users);
+                console.log('users가 배열인가?', Array.isArray(users));
+                
+                const formData = new FormData(event.target);
+                const username = formData.get('username');
+                const password = formData.get('password');
+                
+                console.log('입력된 아이디:', username);
+                console.log('입력된 비밀번호:', password ? '***' : '없음');
+                
+                if (!username || !password) {
+                    console.log('입력값 누락');
+                    showMessage('아이디와 비밀번호를 모두 입력해주세요.', 'error');
+                    return;
+                }
+                
+                // 먼저 아이디가 존재하는지 확인
+                const existingUser = users.find(u => u.username === username);
+                console.log('찾은 사용자:', existingUser);
+                
+                if (!existingUser) {
+                    console.log('로그인 실패: 회원가입되지 않은 아이디');
+                    showMessage('회원가입되지 않은 아이디입니다. 먼저 회원가입을 해주세요.', 'error');
+                    return;
+                }
+                
+                // 아이디는 존재하지만 비밀번호가 틀린 경우
+                if (existingUser.password !== password) {
+                    console.log('로그인 실패: 비밀번호가 틀림');
+                    console.log('입력된 비밀번호:', password);
+                    console.log('저장된 비밀번호:', existingUser.password);
+                    showMessage('비밀번호가 올바르지 않습니다. 다시 확인해주세요.', 'error');
+                    return;
+                }
+                
+                // 로그인 성공
+                console.log('로그인 성공!');
+                const currentUser = {
+                    username: existingUser.username,
+                    email: existingUser.email,
+                    loginTime: new Date().toISOString()
+                };
+                
+                localStorage.setItem('care_current_user', JSON.stringify(currentUser));
+                console.log('사용자 정보 저장됨:', currentUser);
+                showMessage(`${existingUser.username}님, 로그인 성공! CARE 서비스를 이용하실 수 있습니다.`, 'success');
+                
+                setTimeout(() => {
+                    console.log('CARE 메인 페이지로 이동 중...');
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('로그인 처리 중 오류 발생:', error);
+                showMessage('로그인 처리 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+        
+        // 회원가입 처리
+        function handleRegister(event) {
+            console.log('=== 회원가입 함수 호출됨 ===');
+            
+            // 이벤트가 전달되지 않은 경우 (직접 호출)
+            if (event) {
+                event.preventDefault();
+            }
+            
+            try {
+                console.log('회원가입 시도 중...');
+                
+                // users 배열 확인 및 초기화
+                if (!users || !Array.isArray(users)) {
+                    console.error('users 배열이 올바르지 않음, 초기화 시도');
+                    users = getDefaultUsers();
+                    saveUsers();
+                }
+                
+                console.log('현재 사용자 목록:', users);
+                console.log('users 타입:', typeof users);
+                console.log('users가 배열인가?', Array.isArray(users));
+                
+                // 폼 요소 직접 접근
+                const usernameField = document.getElementById('regUsername');
+                const passwordField = document.getElementById('regPassword');
+                const confirmPasswordField = document.getElementById('regPasswordConfirm');
+                
+                if (!usernameField || !passwordField || !confirmPasswordField) {
+                    console.error('회원가입 입력 필드를 찾을 수 없습니다');
+                    showMessage('회원가입 폼을 찾을 수 없습니다. 페이지를 새로고침해주세요.', 'error');
+                    return;
+                }
+                
+                const username = usernameField.value.trim();
+                const password = passwordField.value;
+                const confirmPassword = confirmPasswordField.value;
+                
+                console.log('입력된 아이디:', username);
+                console.log('입력된 비밀번호:', password ? '***' : '없음');
+                console.log('비밀번호 확인:', confirmPassword ? '***' : '없음');
+                
+                if (!username || !password || !confirmPassword) {
+                    console.log('입력값 누락');
+                    showMessage('모든 필드를 입력해주세요.', 'error');
+                    return;
+                }
+                
+                if (username.length < 3) {
+                    console.log('아이디 길이 부족');
+                    showMessage('아이디는 3자 이상이어야 합니다.', 'error');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    console.log('비밀번호 불일치');
+                    showMessage('비밀번호가 일치하지 않습니다.', 'error');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    console.log('비밀번호 길이 부족');
+                    showMessage('비밀번호는 6자 이상이어야 합니다.', 'error');
+                    return;
+                }
+                
+                const existingUser = users.find(u => u.username === username);
+                console.log('기존 사용자 확인:', existingUser);
+                
+                if (existingUser) {
+                    console.log('이미 존재하는 아이디');
+                    showMessage('이미 존재하는 아이디입니다.', 'error');
+                    return;
+                }
+                
+                const newUser = {
+                    username: username,
+                    password: password,
+                    email: `${username}@care.com`,
+                    createdAt: new Date().toISOString()
+                };
+                
+                console.log('새 사용자 생성:', newUser);
+                users.push(newUser);
+                saveUsers();
+                console.log('사용자 목록에 추가됨');
+                
+                const currentUser = {
+                    username: newUser.username,
+                    email: newUser.email,
+                    loginTime: new Date().toISOString()
+                };
+                
+                localStorage.setItem('care_current_user', JSON.stringify(currentUser));
+                console.log('사용자 정보 저장됨:', currentUser);
+                
+                console.log('회원가입 성공!');
+                showMessage(`${newUser.username}님, 회원가입 성공! 자동으로 로그인되어 CARE 서비스를 이용하실 수 있습니다.`, 'success');
+                
+                // 입력 필드 초기화
+                usernameField.value = '';
+                passwordField.value = '';
+                confirmPasswordField.value = '';
+                
+                setTimeout(() => {
+                    console.log('CARE 메인 페이지로 이동 중...');
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('회원가입 처리 중 오류 발생:', error);
+                showMessage('회원가입 처리 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+        
+        // 메시지 표시
+        function showMessage(message, type) {
+            // 기존 메시지 제거
+            const existingMessage = document.querySelector('.auth-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            // 새 메시지 생성
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'auth-message';
+            messageDiv.innerHTML = `
+                <div class="message-content ${type}">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // 스타일 적용
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                .auth-message .message-content {
+                    background: white;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-weight: 500;
+                    max-width: 300px;
+                }
+                
+                .auth-message .message-content.success {
+                    color: #10b981;
+                    border-left: 4px solid #10b981;
+                }
+                
+                .auth-message .message-content.error {
+                    color: #ef4444;
+                    border-left: 4px solid #ef4444;
+                }
+                
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(messageDiv);
+            
+            // 3초 후 자동 제거
+            setTimeout(() => {
+                messageDiv.remove();
+                style.remove();
+            }, 3000);
+        }
+        
+        // 폼 전환 함수들
+        function showRegisterForm() {
+            console.log('=== 회원가입 폼으로 전환 시작 ===');
+            try {
+                const loginForm = document.getElementById('loginForm');
+                const registerForm = document.getElementById('registerForm');
+                
+                console.log('로그인 폼:', loginForm);
+                console.log('회원가입 폼:', registerForm);
+                
+                if (loginForm && registerForm) {
+                    loginForm.style.display = 'none';
+                    registerForm.style.display = 'block';
+                    console.log('폼 전환 완료');
+                    
+                    // 회원가입 폼이 제대로 표시되었는지 확인
+                    setTimeout(() => {
+                        const isVisible = registerForm.style.display === 'block' && registerForm.offsetParent !== null;
+                        console.log('회원가입 폼 표시 상태:', isVisible);
+                        
+                        if (!isVisible) {
+                            console.error('회원가입 폼이 표시되지 않음');
+                            alert('회원가입 폼을 표시할 수 없습니다. 페이지를 새로고침해주세요.');
+                        }
+                    }, 100);
+                } else {
+                    console.error('폼 요소를 찾을 수 없습니다');
+                    console.error('로그인 폼 존재:', !!loginForm);
+                    console.error('회원가입 폼 존재:', !!registerForm);
+                    alert('폼 요소를 찾을 수 없습니다. 페이지를 새로고침해주세요.');
+                }
+            } catch (error) {
+                console.error('폼 전환 중 오류:', error);
+                alert('폼 전환 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+        
+        function showLoginForm() {
+            console.log('로그인 폼으로 전환');
+            try {
+                const loginForm = document.getElementById('loginForm');
+                const registerForm = document.getElementById('registerForm');
+                
+                if (loginForm && registerForm) {
+                    registerForm.style.display = 'none';
+                    loginForm.style.display = 'block';
+                    console.log('폼 전환 완료');
+                } else {
+                    console.error('폼 요소를 찾을 수 없습니다');
+                    alert('폼 요소를 찾을 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('폼 전환 중 오류:', error);
+                alert('폼 전환 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+        
+        // 개발자용 테스트 함수들 (주석 처리)
+        /*
+        function testLogin() {
+            console.log('=== 테스트 로그인 시작 ===');
+            
+            try {
+                const loginForm = document.getElementById('loginForm');
+                if (!loginForm || loginForm.style.display === 'none') {
+                    console.log('로그인 폼이 보이지 않음, 폼 전환 시도');
+                    showLoginForm();
+                }
+                
+                const usernameField = document.getElementById('username');
+                const passwordField = document.getElementById('password');
+                
+                if (usernameField && passwordField) {
+                    usernameField.value = 'admin';
+                    passwordField.value = 'admin123';
+                    console.log('테스트 데이터 입력 완료');
+                } else {
+                    console.error('입력 필드를 찾을 수 없습니다');
+                    showMessage('입력 필드를 찾을 수 없습니다.', 'error');
+                    return;
+                }
+                
+                console.log('사용자 목록:', users);
+                
+                const testUser = users.find(u => u.username === 'admin');
+                console.log('테스트 사용자 찾기:', testUser);
+                
+                if (testUser) {
+                    console.log('테스트 사용자 발견, 로그인 시도...');
+                    const form = document.getElementById('loginForm');
+                    const event = new Event('submit', { bubbles: true, cancelable: true });
+                    form.dispatchEvent(event);
+                } else {
+                    console.log('테스트 사용자를 찾을 수 없음');
+                    showMessage('테스트 사용자를 찾을 수 없습니다. 데이터를 초기화해주세요.', 'error');
+                }
+            } catch (error) {
+                console.error('테스트 로그인 중 오류:', error);
+                showMessage('테스트 로그인 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+        
+        function clearStorage() {
+            console.log('=== 데이터 초기화 시작 ===');
+            
+            if (confirm('모든 데이터를 초기화하시겠습니까?')) {
+                try {
+                    localStorage.clear();
+                    users = getDefaultUsers();
+                    console.log('초기화된 users:', users);
+                    console.log('users 타입:', typeof users);
+                    console.log('users가 배열인가?', Array.isArray(users));
+                    saveUsers();
+                    showMessage('데이터가 초기화되었습니다.', 'success');
+                    console.log('데이터 초기화 완료');
+                } catch (error) {
+                    console.error('데이터 초기화 중 오류:', error);
+                    showMessage('데이터 초기화 중 오류가 발생했습니다: ' + error.message, 'error');
+                }
+            }
+        }
+        
+        function testRegister() {
+            console.log('=== 테스트 회원가입 시작 ===');
+            
+            try {
+                const registerForm = document.getElementById('registerForm');
+                if (!registerForm || registerForm.style.display === 'none') {
+                    console.log('회원가입 폼이 보이지 않음, 폼 전환 시도');
+                    showRegisterForm();
+                    
+                    setTimeout(() => {
+                        performTestRegister();
+                    }, 500);
+                } else {
+                    performTestRegister();
+                }
+                
+            } catch (error) {
+                console.error('테스트 회원가입 중 오류:', error);
+                showMessage('테스트 회원가입 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+        
+        function performTestRegister() {
+            try {
+                const usernameField = document.getElementById('regUsername');
+                const passwordField = document.getElementById('regPassword');
+                const confirmPasswordField = document.getElementById('regPasswordConfirm');
+                
+                if (usernameField && passwordField && confirmPasswordField) {
+                    const testUsername = 'testuser' + Date.now();
+                    usernameField.value = testUsername;
+                    passwordField.value = 'test123';
+                    confirmPasswordField.value = 'test123';
+                    console.log('테스트 데이터 입력 완료:', testUsername);
+                    
+                    handleRegister();
+                } else {
+                    console.error('회원가입 입력 필드를 찾을 수 없습니다');
+                    showMessage('회원가입 입력 필드를 찾을 수 없습니다.', 'error');
+                }
+            } catch (error) {
+                console.error('테스트 회원가입 실행 중 오류:', error);
+                showMessage('테스트 회원가입 실행 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+        */
+        
+        // 기타 함수들
+        function showAbout() {
+            alert('CARE는 AI 기반 맞춤형 장소 추천 서비스입니다.');
+        }
+        
+        function showPrivacy() {
+            alert('개인정보처리방침: 사용자의 개인정보는 안전하게 보호됩니다.');
+        }
+        
+        function showContact() {
+            alert('문의: care@example.com');
+        }
+    </script>
+</body>
+</html>

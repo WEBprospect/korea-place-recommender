@@ -1,0 +1,65 @@
+# Apache 서버 설정 파일
+
+# UTF-8 인코딩 설정
+AddDefaultCharset UTF-8
+
+# MIME 타입 설정
+AddType text/css .css
+AddType application/javascript .js
+AddType application/json .json
+
+# 캐시 설정 - 개발 중에는 캐시 비활성화
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 0 seconds"
+    ExpiresByType application/javascript "access plus 0 seconds"
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# 캐시 방지 헤더
+<IfModule mod_headers.c>
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0" "expr=%{REQUEST_URI} =~ m#\.(css|js|html)$#"
+    Header set Pragma "no-cache" "expr=%{REQUEST_URI} =~ m#\.(css|js|html)$#"
+    Header set Expires "0" "expr=%{REQUEST_URI} =~ m#\.(css|js|html)$#"
+    Header unset ETag "expr=%{REQUEST_URI} =~ m#\.(css|js|html)$#"
+    Header unset Last-Modified "expr=%{REQUEST_URI} =~ m#\.(css|js|html)$#"
+</IfModule>
+
+# GZIP 압축 설정
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# 보안 헤더 설정
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# 에러 페이지 설정
+ErrorDocument 404 /index.html
+
+# 디렉토리 브라우징 비활성화
+Options -Indexes
+
+# 숨김 파일 접근 차단
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
