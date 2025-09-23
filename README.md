@@ -150,25 +150,10 @@ parseBudget(budget) {
 
 ### 4. 핵심 아키텍처
 
-#### 4.1 인증 시스템 (auth.js)
-```javascript
-class AuthManager {
-    // 사용자 인증 및 관리
-    - login(username, password): 로그인 처리
-    - register(username, password, email): 회원가입
-    - logout(): 로그아웃
-    - updateUser(updates): 사용자 정보 업데이트
-    - changePassword(): 비밀번호 변경
-    - deleteAccount(): 계정 삭제
-}
-```
 
-**주요 특징:**
-- LocalStorage 기반 사용자 데이터 관리
-- 24시간 자동 로그인 만료 기능
-- 실시간 사용자 상태 추적
 
-#### 4.2 채팅 시스템 (chat.js)
+
+#### 4.1 채팅 시스템 (chat.js)
 ```javascript
 class CAREChat {
     // 핵심 3가지 주요 기능
@@ -189,7 +174,7 @@ class CAREChat {
 2. **조건 필터링**: 지역, 카테고리, 예산 등 조건별 장소 필터링
 3. **추천 장소 표시**: 필터링된 결과를 카드 형태로 직관적 표시
 
-#### 4.2.1 키워드 추출 및 조건 필터링 로직
+#### 4.1.2 키워드 추출 및 조건 필터링 로직
 
 **1. 추천 키워드 감지 시스템**
 ```javascript
